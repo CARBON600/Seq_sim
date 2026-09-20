@@ -1,0 +1,78 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+title: "seq_sim_v2: Monte Carlo simulation of molecular sequence evolution"
+version: 1.4.1
+license: MIT
+keywords:
+  - phylogenetics
+  - molecular-evolution
+  - simulation
+  - monte-carlo
+  - profile-mixture
+  - seq-gen
+authors:
+  - name: "seq_sim_v2 authors"
+preferred-citation:
+  type: software
+  title: "seq_sim_v2: Monte Carlo simulation of molecular sequence evolution"
+  version: 1.4.1
+  license: MIT
+  authors:
+    - name: "seq_sim_v2 authors"
+references:
+  - type: article
+    title: "Modeling Site-and-Branch-Heterogeneity with GFmix"
+    authors:
+      - family-names: "McCarthy"
+        given-names: "Charley G. P."
+      - family-names: "Susko"
+        given-names: "Edward"
+      - family-names: "Harada"
+        given-names: "Ryo"
+      - family-names: "Roger"
+        given-names: "Andrew J."
+    journal: "Systematic Biology"
+    year: 2026
+    doi: "10.1093/sysbio/syag040"
+  - type: article
+    title: "Empirical profile mixture models for phylogenetic reconstruction"
+    authors:
+      - family-names: "Si Quang"
+        given-names: "Le"
+      - family-names: "Gascuel"
+        given-names: "Olivier"
+      - family-names: "Lartillot"
+        given-names: "Nicolas"
+    journal: "Bioinformatics"
+    volume: 24
+    issue: 20
+    start: 2317
+    end: 2323
+    year: 2008
+    doi: "10.1093/bioinformatics/btn445"
+  - type: article
+    title: "Seq-Gen: an application for the Monte Carlo simulation of DNA sequence evolution along phylogenetic trees"
+    authors:
+      - family-names: "Rambaut"
+        given-names: "Andrew"
+      - family-names: "Grassly"
+        given-names: "Nicholas C."
+    journal: "Bioinformatics"
+    volume: 13
+    issue: 3
+    start: 235
+    end: 238
+    year: 1997
+    doi: "10.1093/bioinformatics/13.3.235"
+  - type: article
+    title: "Modeling compositional heterogeneity"
+    authors:
+      - family-names: "Foster"
+        given-names: "P. G."
+    journal: "Systematic Biology"
+    volume: 53
+    issue: 3
+    start: 485
+    end: 495
+    year: 2004
+    doi: "10.1080/10635150490445779"

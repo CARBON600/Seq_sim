@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "seq-sim-v2"
+description = "Monte Carlo simulation of molecular sequence evolution along phylogenetic trees"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "seq_sim_v2 authors" }]
+keywords = ["phylogenetics", "molecular-evolution", "simulation", "monte-carlo", "seq-gen"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = ["numpy>=1.21", "scipy>=1.7"]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[project.scripts]
+seq-sim = "seq_sim_v2.seq_sim:main"
+
+[tool.setuptools]
+package-dir = { "seq_sim_v2" = "." }
+packages = [
+    "seq_sim_v2",
+    "seq_sim_v2.core",
+    "seq_sim_v2.output",
+    "seq_sim_v2.tree",
+    "seq_sim_v2.utils",
+]
+
+[tool.setuptools.dynamic]
+version = { attr = "seq_sim_v2._version.__version__" }
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.setuptools.package-data]
+"seq_sim_v2" = ["data/cseries/*.dat", "data/cseries/*.md"]
