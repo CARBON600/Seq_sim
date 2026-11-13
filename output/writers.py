@@ -1,19 +1,8 @@
-"""Sequence writers: strict PHYLIP, relaxed PHYLIP, NEXUS and FASTA.
+"""Alignment and rate output writers: strict PHYLIP, relaxed PHYLIP, NEXUS, and FASTA.
 
-Model       : one writer per output format, plus the ancestral and per-site-rate
-              writers.
-Equation    : not applicable.
-Source      : Seq-Gen's output conventions for the PHYLIP and FASTA layouts; the
-              NEXUS block writer is this project's own.
-Convention  : sequences reach this module as integer state codes and are mapped
-              through a cached byte translation table built by _state_table, so
-              the hot path does no per-character branching. Strict PHYLIP
-              truncates names to the strict field width; relaxed PHYLIP keeps
-              them whole. ``-o`` takes p, r, n or f, and appending s writes one
-              file per dataset.
-Invariants  : every written row holds exactly ``num_sites`` state characters and
-              there is one row per taxon; the state order of the input matrix is
-              preserved in the output.
+Maps integer state buffers to ASCII sequences via a cached byte translation
+table and formats tip or ancestral alignments, plus the per-site relative rate
+table for ``-wr``.
 """
 
 import numpy as np
