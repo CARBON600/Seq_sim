@@ -252,6 +252,11 @@ Run the test suite with `pytest`:
 pytest
 ```
 
+Run `pytest` from the repository root. The package root is the repository root,
+so the checkout directory must be named with a valid Python identifier; a zip
+downloaded from GitHub unpacks as `Seq_sim-main/` and should be renamed to
+`seq_sim_v2/` before running the suite.
+
 A fixed `-z` seed and input tree reproduce output files byte-for-byte.
 `tests/test_golden.py` checks SHA-256 digests against reference runs to catch
 any unintended changes in PRNG draw order or numerical arithmetic.
