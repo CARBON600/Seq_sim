@@ -1,15 +1,8 @@
-"""The run's random generator.
+"""Module-level PRNG wrapper around ``numpy.random.default_rng``.
 
-Model       : one module-level generator shared by every draw in a run.
-Equation    : not applicable.
-Source      : not applicable; this project's own.
-Convention  : seeding is global rather than per-call, which is what makes a given
-              ``-z`` reproduce a run byte for byte. ``random`` returns a uniform
-              variate in [0, 1) and ``gamma`` the gamma sampler used by the
-              continuous-gamma path.
-Invariants  : the same seed produces the same sequence of draws, and therefore
-              the same output bytes. Because the generator is global, the package
-              is not thread-safe; a concurrent run must use a separate process.
+Seeding is global so that a fixed ``-z`` seed reproduces a simulation run
+byte-for-byte. Because the generator is module-global, concurrent runs should
+use separate processes rather than threads.
 """
 
 import time
@@ -27,7 +20,7 @@ def set_seed(seed):
 
 
 def create_seed():
-    """Pick a seed when the user does not supply one."""
+    """Pick a time-based 32-bit seed when the user does not supply one."""
     return int(time.time() * 1e6) & 0xFFFFFFFF
 
 
