@@ -1,9 +1,4 @@
-"""Golden-output regression: a fixed seed must reproduce exact bytes.
-
-The hashes are real output, measured on this checkout. They only move when the
-order or arithmetic of the random draws changes, which is exactly what this
-test exists to catch.
-"""
+"""Golden-output regression tests: a fixed seed must reproduce exact output bytes."""
 
 import hashlib
 import sys

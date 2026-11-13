@@ -270,7 +270,16 @@ def test_aa_rejects_codon_rates():
         _parse(["-m", "WAG", "-c", "1", "1", "1"])
 
 
-# --- R1: NEXUS f/r annotation detection is strict ---
+def test_treefile_dash_reads_stdin(tmp_path, monkeypatch):
+    out = tmp_path / "out"
+    monkeypatch.setattr(sys, "argv", ["seq_sim", "-m", "JC69", "-l", "8",
+                                      "-z", "1", "-y", str(out), "-"])
+    monkeypatch.setattr(sys, "stdin", io.StringIO(TREE_ROOTED))
+    S.main()
+    assert (out / "out_1.fasta").exists()
+
+
+# --- NEXUS f/r annotation filtering ---
 
 @pytest.mark.parametrize("content,expected", [
     ("f=1", True), ("r=0", True), ("f=1,r=2", True), ("F = 3", True),
@@ -288,7 +297,7 @@ def test_nexus_strips_plain_comments_but_keeps_fr():
     assert "[f=1]" in out
 
 
-# --- R3: duplicate metadata is rejected ---
+# --- Duplicate branch metadata validation ---
 
 def test_duplicate_branch_length_rejected():
     with pytest.raises(ParseError):
@@ -311,7 +320,7 @@ def test_multiple_distinct_annotations_allowed():
     assert tree.tips[0].rmat_idx == 2
 
 
-# --- R2: input encoding fallback ---
+# --- Input file encoding fallback ---
 
 def test_read_text_utf8_bom(tmp_path):
     p = tmp_path / "bom.nwk"
