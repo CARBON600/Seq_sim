@@ -1,19 +1,8 @@
-"""Node/tree data structures and the Newick parser.
+"""Node and tree data structures and recursive-descent Newick parser.
 
-Model       : TNode and TTree, with the parser that builds them from Newick or
-              from a Newick string extracted from a NEXUS tree block.
-Equation    : not applicable; this module is structural.
-Source      : the TNode/TTree design follows Seq-Gen (Rambaut & Grassly 1997);
-              the recursive-descent parser is this project's own.
-Convention  : branch lengths are read as written; an internal label is stored, so
-              a branch can be addressed by name by --gfmix-branch-hetero. The
-              annotations [f=N] and [r=N] select registry entries and are parsed
-              strictly, so an unknown annotation key is rejected rather than
-              ignored. Duplicate branch lengths and duplicate f/r/rate
-              annotations are rejected rather than silently resolved.
-Invariants  : tree height is computed iteratively, so deep trees cannot exhaust
-              the interpreter stack; tip names are also stored in tree.names for
-              name lookup.
+Parses rooted and unrooted Newick strings (including partition prefixes,
+internal node labels, and ``[f=N]`` / ``[r=N]`` / branch-rate annotations) into
+``TNode`` and ``TTree`` objects.
 """
 
 import numpy as np
