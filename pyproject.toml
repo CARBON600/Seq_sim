@@ -8,7 +8,7 @@ description = "Monte Carlo simulation of molecular sequence evolution along phyl
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
-authors = [{ name = "seq_sim_v2 authors" }]
+authors = [{ name = "DAI Yifan", email = "yidai204@gmail.com" }]
 keywords = ["phylogenetics", "molecular-evolution", "simulation", "monte-carlo", "seq-gen"]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -23,6 +23,9 @@ classifiers = [
 ]
 dependencies = ["numpy>=1.21", "scipy>=1.7"]
 dynamic = ["version"]
+
+[project.urls]
+Repository = "https://github.com/CARBON600/Seq_sim"
 
 [project.optional-dependencies]
 test = ["pytest>=7"]

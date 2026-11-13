@@ -1,23 +1,8 @@
-"""Command-line entry point and simulation pipeline.
+"""Command-line entry point and simulation pipeline for ``seq_sim_v2``.
 
-Usage: python -m seq_sim_v2 -m HKY -l 1000 tree.nwk
-
-Model       : orchestration only. The command line is validated, the model
-              registry is built, the tree is read, and the evolution loop is run
-              once per replicate.
-Equation    : the GFmix branch transform is applied here, through
-              _apply_branch_gammas, to the node objects before evolution starts;
-              the transform itself lives in core/profile_mixture.py.
-Source      : the CLI conventions follow Seq-Gen (_m, -l, -a, -g and so on);
-              the GFmix options are this project's own. See docs/REFERENCES.md.
-Convention  : model index 0 in the registry is always the model built from the
-              command line; --alt-freqs, --alt-rates and --alt-tstv add indices
-              from 1. --gfmix-cseries is mutually exclusive with the --alt-*
-              options. The manual in manual.py is part of the interface: a new
-              option is not complete until --manual documents it.
-Invariants  : a fixed -z with a fixed tree reproduces a run byte for byte; the
-              hashes in tests/test_golden.py fail if the order or arithmetic of
-              the draws changes.
+Parses CLI options, initialises the substitution-model registry (or GFmix
+profile mixture models), reads Newick or NEXUS trees, and runs the sequence
+evolution loop across partitions and replicates.
 """
 
 import argparse
@@ -34,7 +19,6 @@ from ._version import __version__
 from .utils import create_seed, random, set_seed
 from .core.models import AA_MODELS, build_model_registry, setup_model
 from .core.aa_models import empirical_rates
-from .core.cseries import load_cseries
 from .core.profile_mixture import assign_site_profiles, build_profile_models
 from .core.rate_heterogeneity import (
     assign_categories, normalize_branch_rates, setup_rates)
@@ -83,7 +67,7 @@ def main():
     if not args.quiet:
         sys.stderr.write(f"seq_sim v{__version__}\n  Random seed: {seed}\n\n")
 
-    if args.treefile:
+    if args.treefile and args.treefile != "-":
         tree_text = _read_text(args.treefile)
     else:
         if hasattr(sys.stdin, "reconfigure"):
@@ -100,7 +84,7 @@ def main():
         rooted_flags = [r for _, r in nexus_trees]
         if not args.quiet and (args.alt_freqs_list or args.alt_rates_list
                                or args.alt_tstv):
-            _warn("NEXUS input — only [f=N]/[r=N] branch annotations are "
+            _warn("NEXUS input -- only [f=N]/[r=N] branch annotations are "
                   "preserved; other [...] comments are stripped.")
 
     model = setup_model(
@@ -313,10 +297,10 @@ def _branch_scale(args, part_rate, tree):
 
 def _report_height(args, tree, scale):
     sys.stderr.write(f"  Tree height: {tree.total_length:.3f}"
-                     f"  → effective: {tree.total_length * scale:.3f} subs/site\n")
+                     f"  -> effective: {tree.total_length * scale:.3f} subs/site\n")
     if not args.tree_scale and tree.total_length > 2.0:
-        sys.stderr.write("  WARNING: tree height > 2.0 \u2014 sequences may be "
-                         "saturated.\n  Consider using -d 0.5 to normalize "
+        sys.stderr.write("  WARNING: tree height > 2.0 -- sequences may be "
+                         "saturated.\n  Consider using -d 0.5 to normalise "
                          "tree height.\n")
 
 
@@ -351,7 +335,7 @@ def _parse_args():
         prog="seq_sim",
         description="Monte Carlo simulation of molecular sequence evolution")
     p.add_argument("treefile", nargs="?", default=None,
-                   help="Newick tree file (default: stdin)")
+                   help="Newick tree file, or '-' for stdin (default: stdin)")
     p.add_argument("-m", "--model", required=True,
                    help="Substitution model: JC69, HKY, F84, GTR, JTT, WAG, "
                         "PAM, BLOSUM, LG, GENERAL")
@@ -362,7 +346,7 @@ def _parse_args():
     p.add_argument("-s", "--branch-scale", type=float, default=0.0,
                    help="Branch length scaling factor")
     p.add_argument("-d", "--tree-scale", type=float, default=0.0,
-                   help="Normalize total tree height (root-to-tip) to N "
+                   help="Normalise total tree height (root-to-tip) to N "
                         "subs/site. Requires rooted tree. Mutually exclusive "
                         "with -s.")
     p.add_argument("-br", "--branch-rates", action="store_true",

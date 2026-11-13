@@ -6,7 +6,7 @@ def get_manual(version):
     return r"""
 
 ================================================================================
-  seq_sim v""" + version + r""" — Monte Carlo Simulator of Molecular Sequence Evolution
+  seq_sim v""" + version + r""" -- Monte Carlo Simulator of Molecular Sequence Evolution
 ================================================================================
 
 seq_sim evolves nucleotide or amino acid sequences along a phylogenetic tree
@@ -51,8 +51,8 @@ models per node, and NEXUS/BEAST/MrBayes input.
 
   REQUIRED OPTIONS
     -m, --model NAME      Substitution model (REQUIRED). Supported values:
-                          NUCLEOTIDE  — JC69, HKY, F84, GTR, REV (=GTR)
-                          AMINO ACID  — JTT, WAG, PAM, BLOSUM, LG, GENERAL
+                          NUCLEOTIDE  -- JC69, HKY, F84, GTR, REV (=GTR)
+                          AMINO ACID  -- JTT, WAG, PAM, BLOSUM, LG, GENERAL
 
   MODEL PARAMETERS
     -t, --tstv FLOAT      Transition/transversion ratio (HKY, F84 only).
@@ -117,10 +117,10 @@ models per node, and NEXUS/BEAST/MrBayes input.
 
   RATE HETEROGENEITY (mutually exclusive groups: -c | -a/-g | none)
     -a, --gamma SHAPE     Gamma distribution shape parameter (alpha).
-                          Typically 0.2–2.0. Enables continuous gamma
+                          Typically 0.2-2.0. Enables continuous gamma
                           rate variation across sites.
 
-    -g, --gamma-cats N    Number of discrete gamma categories (2–32).
+    -g, --gamma-cats N    Number of discrete gamma categories (2-32).
                           Must be used WITH -a.  Common choices: 4, 8, 16.
 
     -c, --codon-rates R1 R2 R3
@@ -149,10 +149,10 @@ models per node, and NEXUS/BEAST/MrBayes input.
 
   OUTPUT
     -o, --format FMT      Output format:
-                            p,phylip  — strict PHYLIP (10-char padded names)
-                            r,relaxed — Relaxed PHYLIP (full names)
-                            n,nexus   — NEXUS DATA block
-                            f,fasta   — FASTA (default)
+                            p,phylip  -- strict PHYLIP (10-char padded names)
+                            r,relaxed -- Relaxed PHYLIP (full names)
+                            n,nexus   -- NEXUS DATA block
+                            f,fasta   -- FASTA (default)
                           Append 's' for separate files per replicate:
                             ps, rs, ns, fs  (fs is always separate).
 
@@ -189,7 +189,7 @@ models per node, and NEXUS/BEAST/MrBayes input.
 ================================================================================
 
   NUCLEOTIDE MODELS (4 states: A, C, G, T)
-  ─────────────────────────────────────────
+  -----------------------------------------
   JC69    Jukes-Cantor 1969. Equal base frequencies, equal substitution rates.
           No extra parameters needed.
 
@@ -197,7 +197,7 @@ models per node, and NEXUS/BEAST/MrBayes input.
           Uses equilibrium frequencies and a transition/transversion ratio.
           Parameters: -f (freqs), -t (ts/tv).  Omit -t for equal rates.
 
-  F84     Felsenstein 1984. Similar to HKY but with a different parametrisation
+  F84     Felsenstein 1984. Similar to HKY but with a different parameterisation
           of the transition/transversion bias.
           Parameters: -f (freqs), -t (ts/tv).
 
@@ -206,7 +206,7 @@ models per node, and NEXUS/BEAST/MrBayes input.
           Parameters: -f (freqs), -r (6 exchangeability rates).
 
   AMINO ACID MODELS (20 states: ARNDCQEGHILKMFPSTWYV)
-  ─────────────────────────────────────────────────────
+  -----------------------------------------------------
   JTT     Jones-Taylor-Thornton 1992 (DCMUT-corrected values, Kosiol &
           Goldman 2005). Empirical model derived from large protein
           databases. Good general-purpose model.
@@ -254,9 +254,9 @@ models per node, and NEXUS/BEAST/MrBayes input.
       Typical values: -g 4 (standard), -g 8 (more precise).
 
     Shape parameter guidelines:
-      alpha < 0.5  — strong rate variation (many slow, few fast sites)
-      alpha = 1.0  — moderate variation
-      alpha > 2.0  — weak variation (approaching equal rates)
+      alpha < 0.5  -- strong rate variation (many slow, few fast sites)
+      alpha = 1.0  -- moderate variation
+      alpha > 2.0  -- weak variation (approaching equal rates)
 
   CODON-POSITION RATES (-c)
     Models three rate classes corresponding to codon positions 1, 2, 3.
@@ -269,7 +269,7 @@ models per node, and NEXUS/BEAST/MrBayes input.
     A fraction of sites never change (rate = 0). The remaining sites evolve
     at rates scaled by 1/(1-p_inv) to preserve the mean rate.
     Can be combined with Gamma models.
-    Example: -a 0.5 -g 4 -i 0.2  → 20% invariable + Gamma(0.5, 4 cat).
+    Example: -a 0.5 -g 4 -i 0.2  -> 20% invariable + Gamma(0.5, 4 cat).
 
 
 ================================================================================
@@ -278,8 +278,8 @@ models per node, and NEXUS/BEAST/MrBayes input.
 
   BRANCH SCALE (-s)
     Multiply every branch length by a constant factor.
-    -s 2.0  → branches twice as long (more divergence)
-    -s 0.1  → branches one-tenth as long (very conserved)
+    -s 2.0  -> branches twice as long (more divergence)
+    -s 0.1  -> branches one-tenth as long (very conserved)
     Use with unrooted OR rooted trees.
 
   TREE SCALE (-d)
@@ -288,10 +288,10 @@ models per node, and NEXUS/BEAST/MrBayes input.
     All branches are scaled proportionally.
 
     Recommended values:
-      -d 0.1  — weak signal, recent divergence
-      -d 0.5  — moderate (good for most phylogenetics)
-      -d 1.0  — strong signal
-      -d 2.0  — saturated (many multiple hits)
+      -d 0.1  -- weak signal, recent divergence
+      -d 0.5  -- moderate (good for most phylogenetics)
+      -d 1.0  -- strong signal
+      -d 2.0  -- saturated (many multiple hits)
 
     WARNING: if tree.total_length > 2.0 a saturation warning is printed.
 
@@ -309,7 +309,7 @@ models per node, and NEXUS/BEAST/MrBayes input.
   VI. OUTPUT FORMATS
 ================================================================================
 
-  PHYLIP (p)         Strict interleaved format. Taxon names truncated to 10
+  PHYLIP (p)         Strict sequential PHYLIP format. Taxon names truncated to 10
                       characters. Compatible with RAxML, PhyML, PAML.
 
   Relaxed PHYLIP (r) Like PHYLIP but full taxon names (space-separated).
@@ -348,7 +348,7 @@ models per node, and NEXUS/BEAST/MrBayes input.
     Composition index [f=N]:  selects the N-th frequency vector.
     Rate-matrix index [r=N]:  selects the N-th rate matrix / ts/tv set.
 
-  Example — a tree where the outgroup uses different base frequencies:
+  Example -- a tree where the outgroup uses different base frequencies:
     ((A:0.1[f=0],B:0.2[f=0]):0.05[f=0],C:0.3[f=1]):0.0;
 
   The default frequency vector (from -f) is index 0. Alternative vectors
@@ -365,11 +365,11 @@ models per node, and NEXUS/BEAST/MrBayes input.
 
   seq_sim automatically detects NEXUS format and preprocesses:
 
-    → Strips all [...] annotations (handles nesting).
-    → Extracts the TRANSLATE table (numeric taxon IDs → names).
-    → Extracts clean Newick trees from BEGIN TREES blocks.
-    → Detects [&R] (rooted) and [&U] (unrooted) flags per tree.
-    → Parses TREE and UTREE commands.
+    -> Keeps [f=N]/[r=N] annotations, strips other comments.
+    -> Extracts the TRANSLATE table (numeric taxon IDs -> names).
+    -> Extracts clean Newick trees from BEGIN TREES blocks.
+    -> Detects [&R] (rooted) and [&U] (unrooted) flags per tree.
+    -> Parses TREE and UTREE commands.
 
   Supported NEXUS sources:
     BEAST TreeAnnotator (MCC trees with [&height], [&posterior], etc.)

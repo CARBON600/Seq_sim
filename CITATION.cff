@@ -3,6 +3,7 @@ message: "If you use this software, please cite it using the metadata below."
 title: "seq_sim_v2: Monte Carlo simulation of molecular sequence evolution"
 version: 1.4.1
 license: MIT
+repository-code: "https://github.com/CARBON600/Seq_sim"
 keywords:
   - phylogenetics
   - molecular-evolution
@@ -11,14 +12,12 @@ keywords:
   - profile-mixture
   - seq-gen
 authors:
-  - name: "seq_sim_v2 authors"
-preferred-citation:
-  type: software
-  title: "seq_sim_v2: Monte Carlo simulation of molecular sequence evolution"
-  version: 1.4.1
-  license: MIT
-  authors:
-    - name: "seq_sim_v2 authors"
+  - family-names: "DAI"
+    given-names: "Yifan"
+    orcid: "https://orcid.org/0009-0003-0585-5227"
+    affiliation: "Simon F.S. Li Marine Science Laboratory, The Chinese University of Hong Kong"
+    email: "yidai204@gmail.com"
+    alias: "CARBON600"
 references:
   - type: article
     title: "Modeling Site-and-Branch-Heterogeneity with GFmix"
