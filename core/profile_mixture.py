@@ -1,26 +1,11 @@
 """GFmix site and branch heterogeneity (McCarthy, Susko, Harada & Roger 2026).
 
-Model       : site heterogeneity, one C-series profile drawn per site by weight;
-              branch heterogeneity, profile frequencies rescaled on designated
-              branches.
-Equation    : pi^(ce)_j = mu * gamma_G * pi^(c)_j  for j in GARP
-                         = mu * gamma_F * pi^(c)_j  for j in FYMINK
-                         = mu * pi^(c)_j            otherwise
-              with mu fixed by the constraint sum_j pi^(ce)_j = 1, that is
-              mu = 1 / (gamma_G * sum_G pi + gamma_F * sum_F pi + sum_O pi).
-Source      : McCarthy et al. (2026) equations 1.4 and 1.7, numbering per the
-              preprint version; see docs/REFERENCES.md. GARP is {G, A, R, P} and
-              FYMINK is {F, Y, M, I, N, K}, as in the source.
-Convention  : the rescaled vector is a composition, not a rate multiplier; the
-              exchangeabilities are untouched, so the branch keeps its rate
-              scale. gamma_G and gamma_F are shared by every profile on the
-              branch. Eq. 1.8 (sum_c w_c mu_c = 1) is deliberately not imposed,
-              matching the maximum likelihood implementations (see
-              docs/REFERENCES.md).
-Invariants  : |sum(pi_ce) - 1| <= 8.882e-16 over 6 C-series sets and 25
-              (gamma_G, gamma_F) pairs; gamma = (1, 1) is the identity to
-              1.110e-16; matches an independent implementation of the equation
-              to 0.000e+00; gamma shared across profiles to 0.000e+00.
+Implements per-site C-series profile sampling and per-branch GARP/FYMINK
+compositional rescaling (Eqs. 1.4 and 1.7 of the McCarthy et al. bioRxiv
+preprint). On heterogeneous branches, GARP (G, A, R, P) frequencies are scaled
+by ``gamma_G``, FYMINK (F, Y, M, I, N, K) by ``gamma_F``, and the remaining ten
+amino acids by 1, then renormalised to sum to 1 while keeping the model's
+exchangeabilities unchanged.
 """
 
 import numpy as np
@@ -40,8 +25,8 @@ def branch_transform(freqs, gamma_g, gamma_f):
 
     ``freqs`` is a length-20 profile summing to 1. Returns a length-20 vector
     that again sums to 1: the GARP class is scaled by ``gamma_g``, the FYMINK
-    class by ``gamma_f`` and the remaining class by 1, followed by the
-    renormalisation that the normalising factor ``mu`` imposes.
+    class by ``gamma_f`` and the remaining class by 1, followed by
+    renormalisation via the factor ``mu``.
     """
     freqs = np.asarray(freqs, dtype=np.float64)
     sum_g = float(freqs[_GARP_IDX].sum())

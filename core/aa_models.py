@@ -1,20 +1,11 @@
-"""Empirical amino-acid models: JTT, WAG, PAM, BLOSUM62, LG and GENERAL.
+"""Empirical amino-acid substitution models: JTT, WAG, PAM, BLOSUM62, LG, and GENERAL.
 
-Model       : time-reversible Markov models on 20 amino acids.
-Equation    : Q = R * diag(pi) with the diagonal set to minus the row sum, then
-              Q /= mean rate, so that every matrix has mean rate 1. P(t) follows
-              from S = sqrt(pi) Q / sqrt(pi), symmetrised and eigendecomposed
-              once.
-Source      : see docs/REFERENCES.md, "Substitution models". The five named
-              matrices are identical to Seq-Gen 1.3.5's source/aamodels.c.
-Convention  : each model carries 190 exchangeabilities in upper-triangle
-              row-major order over A R N D C Q E G H I L K M F P S T W Y V, plus
-              20 equilibrium frequencies. The mean-rate normalisation is applied
-              per matrix, so a profile mixture can build one matrix per profile
-              without changing the branch length scale. JTT and PAM use the
-              DCMUT-corrected values.
-Invariants  : JTT, WAG, PAM, BLOSUM62 and LG agree with Seq-Gen 1.3.5 entry by
-              entry, in the same order, to max|difference| = 0.000e+00.
+Implements 20-state time-reversible Markov models in the standard order
+``ARNDCQEGHILKMFPSTWYV``. Each model stores 190 upper-triangle exchangeabilities
+and 20 equilibrium frequencies, matching Seq-Gen 1.3.5's ``source/aamodels.c``
+(DCMUT-corrected JTT and PAM). Q = R diag(pi) is scaled to mean rate 1 and
+symmetrised as S = sqrt(pi) Q / sqrt(pi) before a single eigendecomposition, so
+any branch length is a spectral update.
 """
 
 import numpy as np
@@ -30,9 +21,9 @@ AA_ORDER = list(AA_CHARS)
 class AAModel:
     """Amino-acid model, 20x20 symmetric eigendecomposition of Q.
 
-    Built exactly like GTRModel: Q = R * diag(pi) scaled to mean rate 1, then
+    Built like GTRModel: Q = R * diag(pi) scaled to mean rate 1, then
     S = sqrt(pi) Q / sqrt(pi) is decomposed once, so any branch length is a
-    cheap spectral update rather than a fresh matrix exponential.
+    spectral update rather than a fresh matrix exponential.
     """
 
     def __init__(self, freqs, relative_rates):

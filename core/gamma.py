@@ -1,19 +1,8 @@
-"""Discrete and continuous gamma rate variation (Yang 1994).
+"""Discrete and continuous gamma rate variation across sites (Yang 1994).
 
-Model       : among-site rate variation with a Gamma(alpha, alpha) distribution,
-              either discretised into equally probable bins or drawn per site.
-Equation    : bin rate i is the conditional mean
-              k * [P(alpha + 1, q_{i+1} alpha) - P(alpha + 1, q_i alpha)],
-              then all rates are normalised to mean 1.
-Source      : Yang, Z. (1994) J. Mol. Evol. 39: 306-314. Seq-Gen 1.3.5
-              implements the same conditional-mean convention and additionally
-              exposes a median variant (source/gamma.c, DiscreteGamma).
-Convention  : rates are conditional means by default. If the quantiles misbehave
-              the code falls back to bin medians and then to an equal-rate
-              repair, so a run always gets k positive rates. Reported rates are
-              relative, and their mean over sites is 1.
-Invariants  : the returned rates are positive and normalised to mean 1 for every
-              (alpha, k) the caller can pass.
+Computes equiprobable category rates for a Gamma(alpha, alpha) distribution
+using conditional bin means (falling back to bin medians if incomplete-gamma
+evaluation underflows at extreme shape values), normalised to mean rate 1.0.
 """
 
 import numpy as np
@@ -34,11 +23,11 @@ def _quantile(prob, alpha):
 
 
 def _mean_rates(alpha, k):
-    """Conditional mean of each equiprobable bin (Yang 1994, the usual method).
+    """Conditional mean of each equiprobable bin (Yang 1994).
 
-    The bin mean is k * [P(alpha+1, q_i+1*alpha) - P(alpha+1, q_i*alpha)], where
-    q is the bin boundary of Gamma(alpha, rate=alpha) and P is the regularised
-    lower incomplete gamma.
+    The bin mean is k * [P(alpha+1, q_{i+1}*alpha) - P(alpha+1, q_i*alpha)],
+    where q is the bin boundary of Gamma(alpha, rate=alpha) and P is the
+    regularised lower incomplete gamma.
     """
     factor = float(k)
     tail = []
@@ -67,7 +56,7 @@ def _median_rates(alpha, k):
 
 
 def _equal_rates(alpha, k):
-    """Last resort when the quantiles misbehave: bin medians, non-positive
+    """Fallback when extreme quantiles underflow: bin medians with non-positive
     entries lifted off zero, then renormalised."""
     step = 1.0 / (2.0 * k)
     rates = []
@@ -90,7 +79,7 @@ def _usable(rates):
 
 
 def discrete_gamma(alpha, k, median=False):
-    """k equiprobable rates for Gamma(alpha, alpha), normalised to mean 1.
+    """Return k equiprobable rates for Gamma(alpha, alpha), normalised to mean 1.
 
     Falls back to bin medians, then to the equal-rate repair, when the
     incomplete gamma evaluation is not usable. Returns (frequencies, rates).

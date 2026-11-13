@@ -1,29 +1,15 @@
-"""Per-site rate models: codon positions, gamma categories, invariable sites.
+"""Per-site rate variation: codon positions, gamma categories, invariable sites.
 
-Model       : the per-site rate model for one run, held in one ``rate_info``
-              mapping that both the evolution loop and the writers read.
-Equation    : precedence is codon rates > discrete gamma > continuous gamma; the
-              invariable mask is independent of all three. Variable sites are
-              scaled by 1 / (1 - p) so the mean rate over all sites stays 1.
-Source      : Yang, Z. (1994) for the gamma axis; Seq-Gen (Rambaut & Grassly
-              1997) for the invariable-site convention, which scales the
-              remaining sites rather than dropping the invariable ones.
-Convention  : codon rates are relative. The command line normalises them to mean
-              1 (sum 3) before they reach this module, so ``setup_rates`` uses
-              them as given. The invariable proportion p is in [0, 1) and its
-              mask is redrawn once per replicate. The 1/(1 - p) rescaling of the
-              variable sites is applied in core/evolve.py, not here.
-Invariants  : with no codon rates the mean relative rate over all sites is 1;
-              discrete-gamma category rates are normalised to mean 1; the
-              invariable mask has expected density p.
+Configures the ``rate_info`` state dictionary consumed by the evolution loop
+and rate writer, and redraws per-site category assignments and invariable-site
+masks at the start of each replicate.
 """
 
-from typing import Optional, TypedDict
+from typing import TypedDict
 
 import numpy as np
 
 from .gamma import discrete_gamma, rndgamma
-from ..tree.tree_parser import TTree
 from ..utils import random as _rand
 
 
@@ -40,10 +26,6 @@ class RateInfo(TypedDict, total=False):
     categories: np.ndarray
     gamma_rates: np.ndarray
     site_rates: np.ndarray
-
-
-Partition = tuple
-Dataset = list
 
 
 def setup_rates(num_sites, *, codon_rates=None, gamma_shape=None,

@@ -1,21 +1,8 @@
-"""Root sampling, pre-order tree traversal, and the per-branch mutation loop.
+"""Root sequence sampling, pre-order tree traversal, and branch mutation loop.
 
-Model       : sequences evolve down the tree by drawing, at each site, the next
-              state from the branch's transition probabilities.
-Equation    : P(t) comes from the node's model (see core/nuc_models.py and
-              core/aa_models.py); under a profile mixture each site uses the
-              matrix of its own profile.
-Source      : Seq-Gen's pre-order recursive evolution (Rambaut & Grassly 1997)
-              for the traversal design; the per-site profile path is this
-              project's own.
-Convention  : ``model_registry`` is keyed by (comp_idx, rmat_idx) and resolved
-              per node, so a branch can use a different model from its parent.
-              Root states are drawn from the model's equilibrium frequencies
-              unless an ancestral sequence was supplied. Invariable sites are
-              skipped and the variable sites are scaled by 1 / (1 - p).
-Invariants  : every site is visited exactly once per replicate; the
-              profile-mixture path draws one model per site from ``site_profile``
-              and never mixes profiles within a site.
+Evolves sequences from the root out to the tips by sampling child states from
+each branch's cumulative transition probability matrix (or per-site profile
+models when ``--gfmix-cseries`` is active).
 """
 
 import sys
@@ -23,7 +10,6 @@ import sys
 import numpy as np
 
 from ..utils import random
-from ..tree.tree_parser import TNode, TTree
 
 
 def evolve_sequences(tree, from_site, num_sites, scale, model_registry,

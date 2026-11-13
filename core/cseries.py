@@ -1,19 +1,8 @@
 """C-series empirical profile mixtures (Si Quang, Gascuel & Lartillot 2008).
 
-Model       : 10 to 60 empirical amino-acid equilibrium profiles plus one weight
-              per profile, forming a site-heterogeneous mixture.
-Equation    : a site draws profile c with probability w_c; the profile supplies
-              the equilibrium frequencies of that site's rate matrix.
-Source      : Si Quang et al. (2008), Bioinformatics 24(20): 2317-2323. The
-              bundled tables are transcribed from IQ-TREE 2,
-              model/modelmixture.cpp (see data/cseries/SOURCES.md).
-Convention  : one profile per row of `<NAME>.freq.dat`, in the amino-acid order
-              A R N D C Q E G H I L K M F P S T W Y V; weights in the matching
-              `<NAME>.weight.dat`. Both are validated on load.
-Invariants  : against IQ-TREE 2, max|difference| = 0.000e+00; against the GFmix
-              distribution, between 4.8e-07 and 5.0e-07 for C10-C40 and C60; the
-              GFmix C50 file is an archived discrepancy (5.313e-01) and
-              the IQ-TREE values are used.
+Loads the bundled C10-C60 amino-acid equilibrium frequency profiles and weights
+from ``data/cseries/`` (transcribed from IQ-TREE 2's ``model/modelmixture.cpp``
+in ``ARNDCQEGHILKMFPSTWYV`` order) and validates row and weight normalisation.
 """
 
 from importlib.resources import files

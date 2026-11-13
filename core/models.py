@@ -1,27 +1,10 @@
-"""Substitution-model factory and the per-node model registry.
+"""Substitution-model factory and per-node model registry.
 
-Model       : one substitution model per (composition, rate-matrix) pair. A node
-              selects a pair through the [f=N] and [r=N] annotations on the
-              branch that leads into it.
-Equation    : not applicable. This module assembles models; the transition
-              probabilities live in the model classes, and the per-site rates in
-              core/rate_heterogeneity.py.
-Source      : the idea is Foster, P. G. (2004) Modeling compositional
-              heterogeneity, Systematic Biology 53(3): 485-495, and its reference
-              implementation P4. See docs/REFERENCES.md. The
-              (comp_idx, rmat_idx) keying and the annotation syntax are this
-              project's own; P4 is GPL v2 and no P4 code is used here.
-Convention  : index 0 on each axis is the model built from the command line; the
-              remaining entries come from --alt-freqs, --alt-rates and
-              --alt-tstv. equal_freqs applies to axis entry 0 only; a later
-              composition is equal-frequency solely when none was supplied. JC69
-              ignores both axes, and HKY/F84 fall back to equal exchangeability
-              whenever no ts/tv ratio is given for that matrix.
-Invariants  : (0, 0) is always present, and the registry holds exactly
-              len(compositions) * max(len(rate matrices), len(ts/tv ratios))
-              entries. A key outside it raises a ValueError naming the available
-              keys, so an annotation typo cannot silently fall back to another
-              model.
+Builds model instances for each ``(comp_idx, rmat_idx)`` pair referenced by
+``[f=N]`` and ``[r=N]`` branch annotations (Foster 2004). Index 0 on each axis
+corresponds to the primary CLI model; additional entries are populated from
+``--alt-freqs``, ``--alt-rates``, and ``--alt-tstv``. The idea is Foster (2004);
+P4, its reference implementation, is GPL v2 and no P4 code is used here.
 """
 
 from typing import Protocol
@@ -82,12 +65,12 @@ def setup_model(name, tstv=None, equal_exchangeability=True, freqs=None,
 
 def build_model_registry(name, freqs, tstv, equal_exchangeability, equal_freqs,
                          relative_rates, alt_freqs, alt_tstv, alt_rates):
-    """One model per (composition, rate-matrix) pair.
+    """Build one model per ``(comp_idx, rmat_idx)`` pair.
 
-    Trees pick a pair per branch with ``[f=N]`` / ``[r=N]`` on the branch that
-    leads into a node. Index 0 on each axis is the model built from the command
-    line's own arguments; the remaining entries come from --alt-freqs,
-    --alt-rates and --alt-tstv.
+    Trees select a pair per branch via ``[f=N]`` / ``[r=N]`` on the branch
+    leading into a node. Index 0 on each axis is the model built from the
+    primary command-line options; subsequent indices come from ``--alt-freqs``,
+    ``--alt-rates``, and ``--alt-tstv``.
     """
     name = "GTR" if name.upper() == "REV" else name.upper()
 

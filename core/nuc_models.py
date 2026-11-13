@@ -1,23 +1,11 @@
-"""Nucleotide substitution models: JC69, HKY, F84 and GTR.
+"""Nucleotide substitution models: JC69, HKY, F84, and GTR.
 
-Model       : time-reversible Markov models on four states, in a fixed order
-              A, C, G, T.
-Equation    : JC69, HKY and F84 use closed-form P(t) in exp(-beta t); HKY and
-              F84 share the twelve closed-form coefficients built by _hky_tabs.
-              GTR builds Q, scales it to mean rate 1, symmetrises as
-              S = sqrt(pi) Q / sqrt(pi) and eigendecomposes once, so any branch
-              length is a spectral update.
-Source      : Jukes & Cantor (1969); Hasegawa, Kishino & Yano (1985);
-              Felsenstein (1984); Tavare (1986). See docs/REFERENCES.md.
-Convention  : ``set_matrix`` fills a flat array with row-wise cumulative P(t) for
-              every state, and ``set_vector`` does the same for one state, so the
-              sampler scans without renormalising. The symmetrisation is checked
-              to 1e-12 and a violation raises FloatingPointError rather than
-              producing a plausible wrong answer.
-Invariants  : each row of P(t) sums to 1 at every branch length (the last entry
-              is pinned to 1.0 after the cumulative sum), and each process is
-              normalised to mean rate 1, so branch length is in substitutions
-              per site.
+Implements four-state reversible Markov models in ``A, C, G, T`` order. JC69,
+HKY, and F84 evaluate transition probabilities in closed form; GTR builds Q,
+scales it to mean rate 1 and symmetrises it as S = sqrt(pi) Q / sqrt(pi) before
+eigendecomposition. Both ``set_matrix`` and ``set_vector`` write row-wise
+cumulative transition probabilities so the evolution loop can sample states
+without renormalising on the fly.
 """
 
 import numpy as np
