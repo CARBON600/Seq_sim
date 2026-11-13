@@ -2,11 +2,12 @@
 
 Each entry records where the code uses it and how it was verified.
 
-- **T1** primary source fetched, or metadata fetched from Crossref, or a
+- **T1** primary source consulted, or metadata taken from Crossref, or a
   byte-level comparison against the source file, with a locator.
 - **T2** carried from this repository or from a reference implementation's own
-  bibliography; not independently re-fetched.
-- **UNVERIFIED** not obtained. Do not repeat these as fact before checking.
+  bibliography; not independently checked.
+- **UNVERIFIED** not obtained. Recorded as an open item in the last section
+  rather than asserted.
 
 ## 1. Substitution models
 
@@ -16,7 +17,7 @@ Each entry records where the code uses it and how it was verified.
 | Jukes, T. H. and Cantor, C. R. (1969) Evolution of protein molecules. In Munro, H. N. (ed.) *Mammalian Protein Metabolism*, Academic Press, New York, pp. 21-132. https://doi.org/10.1016/b978-1-4832-3211-9.50009-7 | JC69 (`core/nuc_models.py`) | T1 |
 | Hasegawa, M., Kishino, H. and Yano, T. (1985) Dating of the human-ape splitting by a molecular clock of mitochondrial DNA. *Journal of Molecular Evolution*, 22: 160-174 | HKY (`core/nuc_models.py`) | T2 |
 | Felsenstein, J. (1984) Distance methods for inferring phylogenies: a justification. *Evolution*, 38(1): 16-24. https://doi.org/10.1111/j.1558-5646.1984.tb00255.x | F84 (`core/nuc_models.py`) | T1 |
-| Tavare, S. (1986) Some probabilistic and statistical problems in the analysis of DNA sequences. *Lectures on Mathematics in the Life Sciences*, 17: 57-86 | GTR (`core/nuc_models.py`) | T2, see UNVERIFIED |
+| Tavaré, S. (1986) Some probabilistic and statistical problems in the analysis of DNA sequences. *Lectures on Mathematics in the Life Sciences*, 17: 57-86 | GTR (`core/nuc_models.py`) | T2, see UNVERIFIED |
 | Jones, D. T., Taylor, W. R. and Thornton, J. M. (1992) The rapid generation of mutation data matrices from protein sequences. *Computer Applications in the Biosciences*, 8(3): 275-282. https://doi.org/10.1093/bioinformatics/8.3.275 | JTT (`core/aa_models.py`) | T1 |
 | Whelan, S. and Goldman, N. (2001) A general empirical model of protein evolution derived from multiple protein families using a maximum-likelihood approach. *Molecular Biology and Evolution*, 18(5): 691-699. https://doi.org/10.1093/oxfordjournals.molbev.a003851 | WAG (`core/aa_models.py`) | T2 |
 | Dayhoff, M. O., Schwartz, R. M. and Orcutt, B. C. (1978) A model of evolutionary change in proteins. In Dayhoff, M. O. (ed.) *Atlas of Protein Sequence and Structure*, Vol. 5, Suppl. 3, National Biomedical Research Foundation, Washington DC, pp. 345-352 | PAM (`core/aa_models.py`) | T2 |
@@ -93,7 +94,7 @@ Four notes on form.
 
 - Susko, E. (2026) *gfmixf*, version 1.0, 8 September 2026, Dalhousie
   University. https://www.mathstat.dal.ca/~tsusko/software.html (T2; version
-  string read from the driver header, not independently re-fetched).
+  string read from the driver header, not independently checked).
 
 ## 4. Numerical algorithms
 
@@ -127,7 +128,7 @@ files against the named source with a plain element-wise difference.
 
 | Item | Why it is open | How to close it |
 |---|---|---|
-| Tavare (1986), *Lectures on Mathematics in the Life Sciences* 17: 57-86 | absent from Crossref; the series is not indexed there | a library holding the series, or another implementation's bibliography that states the page range |
+| Tavaré (1986), *Lectures on Mathematics in the Life Sciences* 17: 57-86 | absent from Crossref; the series is not indexed there | a library holding the series, or another implementation's bibliography that states the page range |
 | Page range of Yang (1994), *Journal of Molecular Evolution*, 39 | Crossref has the volume and DOI but no pages; 105-111 comes from Seq-Gen's bibliography | the printed article |
 | Volume number of the Jukes & Cantor (1969) chapter | Crossref's record has no volume field. The page range 21-132 is confirmed, and the next chapter in the same book starts at page 133 | the printed book |
-| Equation numbering in the published version of McCarthy et al. (2026) | the publisher returns HTTP 403 to automated fetches and Europe PMC marks the article subscription-only | institutional access; until then quote equation numbers as "per preprint v1" |
+| Equation numbering in the published version of McCarthy et al. (2026) | the typeset article was not accessible when this list was compiled, so its numbering has not been compared with the preprint | the typeset article; until then quote equation numbers as "per preprint v1" |

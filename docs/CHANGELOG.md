@@ -1,118 +1,100 @@
 # Changelog
 
-All notable changes to seq_sim_v2. Versions follow semantic versioning; the
-numerical output is byte-stable within a version for a fixed seed and options.
+All notable changes to `seq_sim_v2`. Simulation output is deterministic for a
+fixed random seed (`-z`) and option set within each minor release.
 
 ## 1.4.1
 
-Site and branch heterogeneity following the GFmix model, plus named internal
-nodes. The baseline for this entry is a 1.3.1 checkout: the 1.4.0 and 1.4.1
-releases cannot be separated from the artefacts available here, so the changes
-are reported as one 1.3.1 to 1.4.1 delta.
+Added GFmix site-and-branch heterogeneity for amino-acid models and support for
+named internal nodes in Newick trees.
 
-Simulation output for a fixed seed and options is unchanged for every model and
-option that already existed. The suite passes at 58 tests, of which 11 are new.
+### Added
+- `core/cseries.py` and `data/cseries/`: C10-C60 empirical amino-acid profile
+  mixtures and weights (Si Quang et al. 2008), transcribed from IQ-TREE 2
+  (`model/modelmixture.cpp`) and cross-checked against the GFmix distribution
+  (see `data/cseries/SOURCES.md`).
+- `core/profile_mixture.py`: `branch_transform` implementing the GARP/FYMINK
+  compositional rescaling (McCarthy et al. 2026), per-site profile sampling,
+  and per-branch profile model construction.
+- `tests/test_gfmix.py`: unit tests covering C-series loading, branch frequency
+  transformation, site profile sampling, and internal node gamma assignment.
+- CLI options `--gfmix-cseries`, `--gfmix-weights`, `--gfmix-branch-hetero`,
+  and `--gfmix-log`.
 
-Added:
+### Changed
+- `core/evolve.py`: added per-site profile evolution path for root sampling and
+  branch mutation.
+- `core/aa_models.py`: added `empirical_rates()` helper to share exchangeability
+  matrices across profile models.
+- `tree/tree_parser.py`: store internal node labels on `node.name` so internal
+  branches can be targeted by `--gfmix-branch-hetero`.
 
-- `core/cseries.py` and `data/cseries/`: the C10-C60 empirical profile mixtures
-  and their weights, transcribed from IQ-TREE 2's `model/modelmixture.cpp` and
-  cross-checked against the GFmix distribution. See `data/cseries/SOURCES.md`.
-- `core/profile_mixture.py`: `branch_transform`, which applies the GFmix branch
-  transform to one profile frequency vector, plus the per-site profile assignment
-  and the per-node model build.
-- `tests/test_gfmix.py` (11 tests): an independent reimplementation of the branch
-  transform is compared against the code, the sum-to-one property is checked,
-  `gamma = (1, 1)` is checked to be the identity, and the per-site profile counts
-  are checked against the weights.
-- Four options, all documented in `--manual`: `--gfmix-cseries`,
-  `--gfmix-weights`, `--gfmix-branch-hetero`, `--gfmix-log`.
-
-Changed:
-
-- `core/evolve.py` (+104/-17): a profile-mixture path, so the root draw and the
-  branch mutation can each use a different model per site.
-- `core/aa_models.py` (+8): `empirical_rates()`, which returns the 190
-  exchangeabilities of a named empirical model, so a profile mixture can reuse one
-  model's exchangeabilities across many profiles.
-- `tree/tree_parser.py` (+16/-5): internal node labels are stored rather than
-  skipped, so a branch can be addressed by name.
-- `seq_sim.py` (+166/-2) and `manual.py` (+28): the new options, the branch-file
-  parser, the gamma application step, and the GFmix log writer.
+### Fixed
+- `-` as the tree-file argument now reads the tree from stdin, as `--manual` has
+  documented since 1.3.0. Previously it reached `open("-")` and raised
+  `FileNotFoundError`.
 
 ## 1.3.1
 
-Code-quality pass. Simulation output is unchanged: the golden hashes in
-`tests/test_golden.py` were regenerated from real output and now pass.
+Maintenance and performance improvements.
 
-- Style: dropped `from __future__` imports and the type-annotation scaffolding
-  on internal helpers; removed docstrings that only restated a function name.
-- Structure: the four near-identical registry branches collapsed into one loop;
-  `discrete_gamma`'s three nested closures became candidate functions; the
-  ancestral writers all use one node walk; PHYLIP strict/relaxed share a writer.
-- Performance: `_mutate_sequence` no longer allocates a per-site length array
-  when rates are uniform; `set_vector` skips the array checks the caller already
-  guarantees; sequence encoding goes through a cached byte translation table.
-- Fixes: `-a 0` is rejected with a message instead of a ZeroDivisionError;
-  `pyproject.toml` no longer points its Homepage at an unrelated project; the
-  `-i`/`-d`/`--ancestor` paths keep their pre-flight validation.
+- Simplified model-registry construction, discrete-gamma fallback helpers, and
+  PHYLIP/ancestral sequence writers.
+- Avoided allocating per-site branch-length arrays in `_mutate_sequence` when
+  substitution rates are uniform across sites, and cached ASCII translation
+  tables for sequence output encoding.
+- Added pre-flight validation rejecting `-a 0` before gamma quantile evaluation.
 
 ## 1.3.0
 
-Internal restructuring for maintainability and packaging. Simulation output is
-byte-identical to 1.2.2 for the same seed and options.
+Packaging and module reorganisation.
 
-- Packaging: added `pyproject.toml` (PEP 621, NumPy/SciPy dependencies, console
-  script `seq-sim`) and an MIT `LICENSE`; the version now has a single source in
-  `_version.py`.
-- Structure: extracted the ~440-line manual into `manual.py`; moved the rate
-  model into `core/rate_heterogeneity.py`; removed the `rate_info_global`
-  module-level global in favour of explicit parameter passing.
-- Typing: added `from __future__ import annotations` and type hints throughout;
-  introduced a `SubstitutionModel` Protocol and a `RateInfo` TypedDict.
-- Comments/docstrings: English only, concise, key notes retained.
-- Tests: added a golden-output regression test (47 tests total).
-- Docs: translated the design and changelog to English under `docs/`.
+- Added PEP 621 `pyproject.toml`, console entry point `seq-sim`, and single-source
+  version in `_version.py`.
+- Extracted CLI manual text into `manual.py` and rate heterogeneity setup into
+  `core/rate_heterogeneity.py`, replacing module-level rate globals with
+  explicit state dictionaries.
+- Added golden-output SHA-256 regression tests in `tests/test_golden.py`.
 
 ## 1.2.2
 
-- Unified module usage string to `python -m seq_sim_v2`.
-- `-wa` now supports NEXUS output (`-o n`); `-o r` writes full (relaxed) names.
-- Removed dead code: `_GTR_RATE_LABELS`, `_inv_sqrt_pi`, `count_trees`.
-- Full re-verification of all documented line references.
+- Extended `-wa` (ancestral sequence output) to support NEXUS (`-o n`) and
+  relaxed PHYLIP (`-o r`) formats.
+- Removed unused helper symbols and updated CLI usage examples.
 
 ## 1.2.1
 
-- NEXUS `[f=N]`/`[r=N]` detection made strict (`f=`/`r=` only), so ordinary
-  comments such as `[R]` are stripped again.
-- Input reading: UTF-8 with a locale fallback and warning for non-UTF-8 files.
-- Parser rejects duplicate branch lengths and duplicate `f`/`r`/rate
-  annotations.
+- Restricted NEXUS bracket preservation to `[f=N]` and `[r=N]` tokens so
+  standard comments such as `[R]` are stripped cleanly.
+- Added UTF-8 BOM handling and locale encoding fallback when reading input files.
+- Added parser checks rejecting duplicate branch lengths or duplicate `[f=N]`,
+  `[r=N]`, and branch-rate annotations on the same node.
 
 ## 1.2.0
 
-Correctness fixes from the audit:
+Bug fixes and model data updates:
 
-- `-i` alone now actually assigns invariable sites.
-- `-wa` no longer writes each subtree twice.
-- Removed the ineffective `-p/--max-partitions`.
-- Replaced the LG matrix with the authoritative values (PAML/Seq-Gen).
-  Documented that JTT and PAM are the DCMUT-corrected matrices.
-- `-d` validates rootedness and positive tree height before creating output.
-- `-wr` reports zero rates for invariable sites under `-i -c`.
-- NEXUS preprocessing preserves `[f=N]`/`[r=N]`.
-- Diagnostic error for missing model-registry entries; annotations accepted
-  before or after branch lengths; `--ancestor` length/character validation;
-  UTF-8 I/O; unified comma/space separators.
+- Fixed `-i` (invariable sites) when used without `-a` or `-c`.
+- Fixed duplicate subtree traversal under `-wa`.
+- Updated the built-in LG exchangeability matrix to match PAML / Seq-Gen 1.3.5
+  and documented the DCMUT-corrected JTT and PAM matrices.
+- Validated tree rootedness and positive height for `-d` before creating output
+  directories.
+- Reported zero relative rates for invariable sites under `-wr` when combined
+  with `-i` and `-c`.
+- Preserved `[f=N]` and `[r=N]` branch annotations during NEXUS preprocessing
+  and allowed annotations before or after branch lengths.
 
 ## 1.1.0
 
-- Amino-acid models now default to their empirical frequencies (previously
-  uniform). Added `-f e` for equal frequencies; named AA models honour
-  `-r`/`--alt-rates`; model-aware length validation.
+- Changed amino-acid models to default to their empirical equilibrium
+  frequencies (added `-f e` for uniform frequencies).
+- Enabled custom `-r` and `--alt-rates` exchangeability vectors on named
+  amino-acid models.
 
 ## 1.0.0
 
-Initial release: JC69/HKY/F84/GTR and JTT/WAG/PAM/BLOSUM/LG/GENERAL models,
-gamma/codon/invariable rate heterogeneity, node-heterogeneous models,
-partitioned data, NEXUS input, and PHYLIP/NEXUS/FASTA output.
+Initial release supporting nucleotide (JC69, HKY, F84, GTR) and amino-acid
+(JTT, WAG, PAM, BLOSUM62, LG, GENERAL) substitution models, gamma/codon/invariable
+rate variation, node-heterogeneous models, partitioned alignments, NEXUS input,
+and PHYLIP/NEXUS/FASTA output.
