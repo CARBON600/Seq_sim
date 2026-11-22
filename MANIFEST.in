@@ -1,0 +1,12 @@
+include README.md
+include LICENSE
+include CITATION.cff
+include NOTICE
+include pyproject.toml
+include MANIFEST.in
+graft src
+graft tests
+graft examples
+graft docs
+prune .github
+global-exclude __pycache__ *.py[cod] .DS_Store
