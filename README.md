@@ -28,20 +28,20 @@ Tests run from the repository root with `pytest`; `tests/conftest.py` puts
 
 ```bash
 # 1000 bp under HKY, ts/tv = 4.0, FASTA (default)
-seq-sim -m HKY -l 1000 -t 4.0 tree.nwk
+seq-sim -m HKY -l 1000 -t 4.0 examples/tree.nwk
 
 # 500 amino-acid sites under WAG
-seq-sim -m WAG -l 500 tree.nwk
+seq-sim -m WAG -l 500 examples/tree.nwk
 
 # GTR with four discrete gamma categories, shape 0.5
-seq-sim -m GTR -a 0.5 -g 4 tree.nwk
+seq-sim -m GTR -a 0.5 -g 4 examples/tree.nwk
 
 # Tree height normalised to 0.5 substitutions/site (rooted tree)
-seq-sim -m HKY -d 0.5 tree.nwk
+seq-sim -m HKY -d 0.5 examples/tree.nwk
 
 # C10 profile mixture with branch heterogeneity, 3 replicates, PHYLIP
 seq-sim -m LG -l 500 -n 3 --gfmix-cseries C10 \
-    --gfmix-branch-hetero gammas.txt -o p -y run1 tree.nwk
+    --gfmix-branch-hetero examples/gammas.txt -o p -y run1 examples/tree.nwk
 
 # Full manual
 seq-sim --manual
